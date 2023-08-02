@@ -1,0 +1,63 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Product {
+  id: String!
+  name: String!
+  quantity: Float!
+  description: String!
+  image: String!
+}
+
+type Category {
+  id: String!
+  name: String!
+  products: [Product!]!
+}
+
+type Query {
+  sayHello: String!
+  getAllCategory: [Category!]!
+}
+
+type Mutation {
+  createAccount(dto: CreateAccountDTO!): String!
+  createCategory(dto: CreateCategoryDTO!): Category!
+  updateCategory(id: String!, dto: UpdateCategoryDTO!): Category!
+  deleteCategory(id: String!): String!
+  createProduct(dto: CreateProductDTO!): Product!
+  updateProduct(id: String!, dto: UpdateProductDTO!): Product!
+}
+
+input CreateAccountDTO {
+  username: String!
+  password: String!
+}
+
+input CreateCategoryDTO {
+  name: String!
+}
+
+input UpdateCategoryDTO {
+  name: String!
+}
+
+input CreateProductDTO {
+  name: String!
+  quantity: Float!
+  description: String!
+  categoryId: String!
+  image: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input UpdateProductDTO {
+  name: String
+  quantity: Float
+  description: String
+  categoryId: String
+  image: Upload
+}
