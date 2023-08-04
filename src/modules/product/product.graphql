@@ -3,9 +3,8 @@ scalar Date
 type Product {
   id: String!
   name: String!
-  quantity: Float!
+  quantity: Int!
   description: String!
-  image: String!
   category: Category!
   createdAt: Date
   updatedAt: Date
@@ -17,8 +16,8 @@ type Query {
 }
 
 input PageDTO {
-  limit: Float!
-  page: Float!
+  limit: Int!
+  page: Int!
 }
 
 type Mutation {
@@ -27,25 +26,18 @@ type Mutation {
   deleteProduct(id: String!): String!
 }
 
-"""
-The `Upload` scalar type represents a file upload.
-"""
-scalar Upload
-
 input CreateProductDTO {
   name: String!
-  quantity: Float!
+  quantity: Int!
   description: String!
   categoryId: String!
-  image: Upload!
 }
 
 input UpdateProductDTO {
   name: String
-  quantity: Float
+  quantity: Int
   description: String
   categoryId: String
-  image: Upload
 }
 
 type ProductsResponse {

@@ -22,10 +22,6 @@ export class CreateProductDTO {
   @IsUUID()
   @IsNotEmpty()
   categoryId: string;
-
-  @Field(() => GraphQLUpload)
-  @IsNotEmpty()
-  image: Upload;
 }
 
 @InputType()
@@ -48,8 +44,4 @@ export class UpdateProductDTO {
   @IsOptional()
   @IsUUID()
   categoryId?: string;
-
-  @Field(() => GraphQLUpload, { nullable: true })
-  @IsOptional()
-  image?: Upload;
 }

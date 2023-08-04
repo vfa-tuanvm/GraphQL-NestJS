@@ -19,32 +19,19 @@ export class ProductService {
     private productRepository: Repository<Product>,
   ) {}
 
-  async uploadImage(file: Upload) {
-    return this.cloudinaryService.uploadImage(file, 'iternship');
-  }
-
   async create(dto: CreateProductDTO): Promise<Product> {
     const category = await this.categoryService.findById(dto.categoryId);
-
-    const file = await dto.image.file;
-    console.log('file: ', file);
-
-    const uploadImageResult = await this.cloudinaryService.uploadImage(
-      file,
-      'internship',
-    );
 
     const newProduct = this.productRepository.create({
       name: dto.name,
       category,
       description: dto.description,
-      image: uploadImageResult.public_id,
       quantity: dto.quantity,
     });
 
     const product = await this.productRepository.save(newProduct);
 
-    (product.category = category), (product.image = uploadImageResult.url);
+    product.category = category;
 
     return product;
   }
@@ -79,19 +66,6 @@ export class ProductService {
       queryBuider.set({ quantity: dto.quantity });
     }
 
-    if (dto.image) {
-      const file = await dto.image.file;
-
-      const uploadImageResult = await this.cloudinaryService.uploadImage(
-        file,
-        'internship',
-      );
-
-      this.cloudinaryService.deleteImage(product.image);
-
-      queryBuider.set({ image: uploadImageResult.public_id });
-    }
-
     await queryBuider.where('id = :id', { id }).execute();
 
     const result = await this.productRepository.findOne({
@@ -100,9 +74,6 @@ export class ProductService {
       },
       where: { id },
     });
-
-    const imageUrl = await this.cloudinaryService.getImageUrl(result.image);
-    result.image = imageUrl;
 
     return result;
   }
@@ -117,8 +88,6 @@ export class ProductService {
         },
       });
     }
-
-    this.cloudinaryService.deleteImage(product.image);
 
     await this.productRepository.delete(id);
 
@@ -160,11 +129,6 @@ export class ProductService {
       totalCount: total,
       currentPage: dto.page,
     };
-
-    for (const product of products) {
-      const imageURL = await this.cloudinaryService.getImageUrl(product.image);
-      product.image = imageURL;
-    }
 
     return { data: products, pageInfo };
   }

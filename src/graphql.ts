@@ -41,7 +41,6 @@ export class CreateProductDTO {
     quantity: number;
     description: string;
     categoryId: string;
-    image: Upload;
 }
 
 export class UpdateProductDTO {
@@ -49,7 +48,6 @@ export class UpdateProductDTO {
     quantity?: Nullable<number>;
     description?: Nullable<string>;
     categoryId?: Nullable<string>;
-    image?: Nullable<Upload>;
 }
 
 export class PageInfo {
@@ -112,7 +110,6 @@ export class Product {
     name: string;
     quantity: number;
     description: string;
-    image: string;
     category: Category;
     createdAt?: Nullable<Date>;
     updatedAt?: Nullable<Date>;
@@ -123,5 +120,4 @@ export class ProductsResponse {
     pageInfo?: Nullable<PageInfo>;
 }
 
-export type Upload = any;
 type Nullable<T> = T | null;

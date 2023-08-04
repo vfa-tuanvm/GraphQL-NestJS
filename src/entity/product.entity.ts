@@ -29,10 +29,6 @@ class Product {
   @Field()
   public description: string;
 
-  @Column()
-  @Field()
-  public image: string;
-
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn()
   @Field((type) => Category)

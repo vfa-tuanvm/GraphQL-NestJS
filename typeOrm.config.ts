@@ -4,7 +4,6 @@ import { config } from 'dotenv';
 
 config({ path: 'env/.env.local' });
 const configService = new ConfigService();
-console.log(configService.get('MYSQL_PASSWORD'));
 
 export const dataSourceOption: DataSourceOptions = {
   type: 'mysql',
