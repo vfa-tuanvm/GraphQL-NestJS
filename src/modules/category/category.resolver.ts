@@ -21,12 +21,12 @@ export class CategoryResolver {
     return this.categoryService.getAll();
   }
 
-  @Mutation((returns) => Category)
+  @Mutation('createCategory')
   async createCategory(@Args('dto') dto: CreateCategoryDTO): Promise<Category> {
     return this.categoryService.create(dto);
   }
 
-  @Mutation((returns) => Category)
+  @Mutation('updateCategory')
   async updateCategory(
     @Args('id', new ParseUUIDPipe()) id: string,
     @Args('dto') dto: UpdateCategoryDTO,
@@ -34,7 +34,7 @@ export class CategoryResolver {
     return this.categoryService.update(id, dto);
   }
 
-  @Mutation((returns) => String)
+  @Mutation('deleteCategory')
   async deleteCategory(
     @Args('id', new ParseUUIDPipe()) id: string,
   ): Promise<string> {

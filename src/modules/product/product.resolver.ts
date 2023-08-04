@@ -11,12 +11,12 @@ import { PageDTO } from '../../common/pagination';
 export class ProductResolver {
   constructor(private productService: ProductService) {}
 
-  @Query(() => Product)
+  @Query('getProductById')
   async getProductById(@Args('id', new ParseUUIDPipe()) id: string) {
     return this.productService.getById(id);
   }
 
-  @Mutation((returns) => Product)
+  @Mutation('createProduct')
   async createProduct(
     @Args('dto')
     dto: CreateProductDTO,
@@ -24,7 +24,7 @@ export class ProductResolver {
     return this.productService.create(dto);
   }
 
-  @Mutation((returns) => Product)
+  @Mutation('updateProduct')
   async updateProduct(
     @Args('id', new ParseUUIDPipe()) id: string,
     @Args('dto') dto: UpdateProductDTO,
@@ -32,7 +32,7 @@ export class ProductResolver {
     return this.productService.update(id, dto);
   }
 
-  @Mutation((returns) => String)
+  @Mutation('deleteProduct')
   async deleteProduct(@Args('id', new ParseUUIDPipe()) id: string) {
     return this.productService.delete(id);
   }
