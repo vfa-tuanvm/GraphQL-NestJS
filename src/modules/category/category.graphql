@@ -1,0 +1,29 @@
+type Category {
+  id: String!
+  name: String!
+  products: [Product!]!
+}
+
+input CreateCategoryDTO {
+  name: String!
+}
+
+input UpdateCategoryDTO {
+  name: String!
+}
+
+type Query {
+  getCategories(dto: PageDTO): CategoriesResponse
+  getAllCategories: [Category!]
+}
+
+type Mutation {
+  createCategory(dto: CreateCategoryDTO!): Category!
+  updateCategory(id: String!, dto: UpdateCategoryDTO!): Category!
+  deleteCategory(id: String!): String!
+}
+
+type CategoriesResponse {
+  data: [Category]
+  pageInfo: PageInfo
+}

@@ -5,6 +5,8 @@ import { Not, Repository } from 'typeorm';
 import { CreateCategoryDTO, UpdateCategoryDTO } from './category.dto';
 import { GraphQLError } from 'graphql';
 import { CONFLICT, NOT_FOUND } from '../../constance/error-code';
+import { PageDTO, PageInfo } from '../../common/pagination';
+import Product from '../../entity/product.entity';
 
 @Injectable()
 export class CategoryService {
@@ -13,15 +15,23 @@ export class CategoryService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  async getAll(): Promise<Category[]> {
+  async getCategories(dto: PageDTO) {
+    const total = await this.categoryRepository.count();
+
     const categories = await this.categoryRepository.find({
       relations: {
         products: true,
       },
+      take: dto.limit,
+      skip: (dto.page - 1) * dto.limit,
     });
 
-    console.log('categories: ', categories);
-    return categories;
+    const pageInfo: PageInfo = {
+      totalCount: total,
+      currentPage: dto.page,
+    };
+
+    return { data: categories, pageInfo };
   }
 
   async create(dto: CreateCategoryDTO): Promise<Category> {
@@ -115,5 +125,15 @@ export class CategoryService {
     }
 
     return category;
+  }
+
+  async getAll(): Promise<Category[]> {
+    const categories = await this.categoryRepository.find({
+      relations: {
+        products: true,
+      },
+    });
+
+    return categories;
   }
 }

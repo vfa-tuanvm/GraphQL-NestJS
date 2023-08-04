@@ -1,0 +1,14 @@
+input SignInDTO {
+  username: String!
+  password: String!
+}
+
+input SignupDTO {
+  username: String!
+  password: String!
+}
+
+type Mutation {
+  signin(dto: SignInDTO!): String!
+  signup(dto: SignupDTO!): String!
+}

@@ -2,14 +2,22 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateCategoryDTO, UpdateCategoryDTO } from './category.dto';
 import { CategoryService } from './category.service';
 import Category from '../../entity/category.entity';
-import { ParseUUIDPipe } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { PageDTO } from '../../common/pagination';
 
 @Resolver()
+@UseGuards(JwtAuthGuard)
 export class CategoryResolver {
   constructor(private categoryService: CategoryService) {}
 
-  @Query((type) => [Category])
-  async getAllCategory(): Promise<Category[]> {
+  @Query('getCategories')
+  async getCategories(@Args('dto') dto: PageDTO) {
+    return this.categoryService.getCategories(dto);
+  }
+
+  @Query('getAllCategories')
+  async getAllCategories() {
     return this.categoryService.getAll();
   }
 

@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GraphQLError } from 'graphql';
 import { NOT_FOUND } from '../../constance/error-code';
+import { PageDTO, PageInfo } from '../../common/pagination';
 
 @Injectable()
 export class ProductService {
@@ -103,5 +104,64 @@ export class ProductService {
     result.image = imageUrl;
 
     return result;
+  }
+
+  async delete(id: string): Promise<string> {
+    const product = await this.productRepository.findOneBy({ id });
+
+    if (!product) {
+      throw new GraphQLError('Product not found', {
+        extensions: {
+          code: NOT_FOUND,
+        },
+      });
+    }
+
+    this.cloudinaryService.deleteImage(product.image);
+
+    await this.productRepository.delete(id);
+
+    return id;
+  }
+
+  async getById(id: string): Promise<Product> {
+    const product = await this.productRepository.findOne({
+      relations: {
+        category: true,
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (!product) {
+      throw new GraphQLError('Product not found', {
+        extensions: {
+          code: NOT_FOUND,
+        },
+      });
+    }
+
+    return product;
+  }
+
+  async getProducts(dto: PageDTO) {
+    const total = await this.productRepository.count();
+    const products = await this.productRepository.find({
+      take: dto.limit,
+      skip: (dto.page - 1) * dto.limit,
+    });
+
+    const pageInfo: PageInfo = {
+      totalCount: total,
+      currentPage: dto.page,
+    };
+
+    for (const product of products) {
+      const imageURL = await this.cloudinaryService.getImageUrl(product.image);
+      product.image = imageURL;
+    }
+
+    return { data: products, pageInfo };
   }
 }

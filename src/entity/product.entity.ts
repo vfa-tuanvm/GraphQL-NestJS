@@ -5,6 +5,8 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import Category from './category.entity';
 
@@ -33,7 +35,16 @@ class Product {
 
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn()
+  @Field((type) => Category)
   category: Category;
+
+  @CreateDateColumn()
+  @Field()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  @Field()
+  updatedAt: Date;
 }
 
 export default Product;

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateAccountDTO } from './account.dto';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
-import { CONFLICT } from '../../constance/error-code';
+import { CONFLICT, NOT_FOUND } from '../../constance/error-code';
 
 @Injectable()
 export class AccountService {
@@ -35,5 +35,19 @@ export class AccountService {
     await this.accountRepository.save(newAccount);
 
     return newAccount.username;
+  }
+
+  async findOne(username: string): Promise<Account> {
+    const account = await this.accountRepository.findOneBy({ username });
+
+    if (!account) {
+      throw new GraphQLError('Account not found.', {
+        extensions: {
+          code: NOT_FOUND,
+        },
+      });
+    }
+
+    return account;
   }
 }

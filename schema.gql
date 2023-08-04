@@ -8,6 +8,7 @@ type Product {
   quantity: Float!
   description: String!
   image: String!
+  category: Category!
 }
 
 type Category {
@@ -17,22 +18,25 @@ type Category {
 }
 
 type Query {
-  sayHello: String!
   getAllCategory: [Category!]!
+  getProductById(id: String!): Product!
+  getProducts(dto: PageDTO!): [Product!]!
+}
+
+input PageDTO {
+  limit: Float!
+  page: Float!
 }
 
 type Mutation {
-  createAccount(dto: CreateAccountDTO!): String!
   createCategory(dto: CreateCategoryDTO!): Category!
   updateCategory(id: String!, dto: UpdateCategoryDTO!): Category!
   deleteCategory(id: String!): String!
   createProduct(dto: CreateProductDTO!): Product!
   updateProduct(id: String!, dto: UpdateProductDTO!): Product!
-}
-
-input CreateAccountDTO {
-  username: String!
-  password: String!
+  deleteProduct(id: String!): String!
+  signin(dto: signInDTO!): String!
+  signup(dto: signupDTO!): String!
 }
 
 input CreateCategoryDTO {
@@ -60,4 +64,14 @@ input UpdateProductDTO {
   description: String
   categoryId: String
   image: Upload
+}
+
+input signInDTO {
+  username: String!
+  password: String!
+}
+
+input signupDTO {
+  username: String!
+  password: String!
 }

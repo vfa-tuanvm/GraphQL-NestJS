@@ -1,0 +1,50 @@
+type Product {
+  id: String!
+  name: String!
+  quantity: Float!
+  description: String!
+  image: String!
+  category: Category!
+}
+
+type Query {
+  getProductById(id: String!): Product!
+  getProducts(dto: PageDTO!): ProductsResponse!
+}
+
+input PageDTO {
+  limit: Float!
+  page: Float!
+}
+
+type Mutation {
+  createProduct(dto: CreateProductDTO!): Product!
+  updateProduct(id: String!, dto: UpdateProductDTO!): Product!
+  deleteProduct(id: String!): String!
+}
+
+"""
+The `Upload` scalar type represents a file upload.
+"""
+scalar Upload
+
+input CreateProductDTO {
+  name: String!
+  quantity: Float!
+  description: String!
+  categoryId: String!
+  image: Upload!
+}
+
+input UpdateProductDTO {
+  name: String
+  quantity: Float
+  description: String
+  categoryId: String
+  image: Upload
+}
+
+type ProductsResponse {
+  data: [Product]
+  pageInfo: PageInfo
+}

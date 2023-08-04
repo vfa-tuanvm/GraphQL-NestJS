@@ -1,0 +1,3 @@
+interface IJWTInfo {
+  username: string;
+}

@@ -2,9 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import * as graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe());
+
   app.use(
     '/graphql',
     graphqlUploadExpress({ maxFileSize: 100000000, maxFiles: 10 }),

@@ -1,18 +1,19 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
-import * as Upload from 'graphql-upload/Upload.js';
 import { ProductService } from './product.service';
 import Product from '../../entity/product.entity';
 import { CreateProductDTO, UpdateProductDTO } from './product.dto';
-import { ParseUUIDPipe } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { PageDTO } from '../../common/pagination';
 
 @Resolver()
+@UseGuards(JwtAuthGuard)
 export class ProductResolver {
   constructor(private productService: ProductService) {}
 
-  @Query(() => String)
-  sayHello(): string {
-    return 'Hello World!';
+  @Query(() => Product)
+  async getProductById(@Args('id', new ParseUUIDPipe()) id: string) {
+    return this.productService.getById(id);
   }
 
   @Mutation((returns) => Product)
@@ -29,5 +30,15 @@ export class ProductResolver {
     @Args('dto') dto: UpdateProductDTO,
   ) {
     return this.productService.update(id, dto);
+  }
+
+  @Mutation((returns) => String)
+  async deleteProduct(@Args('id', new ParseUUIDPipe()) id: string) {
+    return this.productService.delete(id);
+  }
+
+  @Query('getProducts')
+  async getProducts(@Args('dto') dto: PageDTO) {
+    return this.productService.getProducts(dto);
   }
 }
