@@ -114,7 +114,10 @@ export class CategoryService {
   }
 
   async findById(id: string): Promise<Category> {
-    const category = await this.categoryRepository.findOneBy({ id });
+    const category = await this.categoryRepository.findOne({
+      relations: { products: true },
+      where: { id },
+    });
 
     if (!category) {
       throw new GraphQLError('Category not found', {

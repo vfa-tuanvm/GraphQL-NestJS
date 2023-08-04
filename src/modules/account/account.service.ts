@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Account from '../../entity/account.entity';
 import { Repository } from 'typeorm';
-import { CreateAccountDTO } from './account.dto';
+import { ChangePassDTO, CreateAccountDTO } from './account.dto';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
-import { CONFLICT, NOT_FOUND } from '../../constance/error-code';
+import {
+  CONFLICT,
+  NOT_FOUND,
+  PASSWORD_NOT_MATCH,
+} from '../../constance/error-code';
 
 @Injectable()
 export class AccountService {
@@ -49,5 +53,28 @@ export class AccountService {
     }
 
     return account;
+  }
+
+  async changePass(username: string, dto: ChangePassDTO) {
+    const account = await this.accountRepository.findOneBy({ username });
+
+    const isMatch = await bcrypt.compare(dto.oldPass, account.password);
+
+    if (!isMatch) {
+      throw new GraphQLError('Password not match', {
+        extensions: {
+          code: PASSWORD_NOT_MATCH,
+        },
+      });
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(dto.newPass, salt);
+
+    account.password = hashPassword;
+
+    await this.accountRepository.save(account);
+
+    return 'Change password success';
   }
 }

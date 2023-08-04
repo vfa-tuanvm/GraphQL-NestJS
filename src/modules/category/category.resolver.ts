@@ -21,6 +21,11 @@ export class CategoryResolver {
     return this.categoryService.getAll();
   }
 
+  @Query('getCategoryById')
+  async getCategoryById(@Args('id', new ParseUUIDPipe()) id: string) {
+    return this.categoryService.findById(id);
+  }
+
   @Mutation('createCategory')
   async createCategory(@Args('dto') dto: CreateCategoryDTO): Promise<Category> {
     return this.categoryService.create(dto);

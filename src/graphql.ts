@@ -8,6 +8,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export class ChangePassDTO {
+    oldPass: string;
+    newPass: string;
+}
+
 export class SignInDTO {
     username: string;
     password: string;
@@ -52,19 +57,9 @@ export class PageInfo {
     currentPage: number;
 }
 
-export abstract class IQuery {
-    abstract refreshToken(): Nullable<AuthResponse> | Promise<Nullable<AuthResponse>>;
-
-    abstract getCategories(dto?: Nullable<PageDTO>): Nullable<CategoriesResponse> | Promise<Nullable<CategoriesResponse>>;
-
-    abstract getAllCategories(): Nullable<Category[]> | Promise<Nullable<Category[]>>;
-
-    abstract getProductById(id: string): Product | Promise<Product>;
-
-    abstract getProducts(dto: PageDTO): ProductsResponse | Promise<ProductsResponse>;
-}
-
 export abstract class IMutation {
+    abstract changePass(dto?: Nullable<ChangePassDTO>): Nullable<string> | Promise<Nullable<string>>;
+
     abstract signin(dto: SignInDTO): AuthResponse | Promise<AuthResponse>;
 
     abstract signup(dto: SignupDTO): string | Promise<string>;
@@ -80,6 +75,20 @@ export abstract class IMutation {
     abstract updateProduct(id: string, dto: UpdateProductDTO): Product | Promise<Product>;
 
     abstract deleteProduct(id: string): string | Promise<string>;
+}
+
+export abstract class IQuery {
+    abstract refreshToken(): Nullable<AuthResponse> | Promise<Nullable<AuthResponse>>;
+
+    abstract getCategories(dto?: Nullable<PageDTO>): Nullable<CategoriesResponse> | Promise<Nullable<CategoriesResponse>>;
+
+    abstract getAllCategories(): Nullable<Category[]> | Promise<Nullable<Category[]>>;
+
+    abstract getCategoryById(id?: Nullable<string>): Nullable<Category> | Promise<Nullable<Category>>;
+
+    abstract getProductById(id: string): Product | Promise<Product>;
+
+    abstract getProducts(dto: PageDTO): ProductsResponse | Promise<ProductsResponse>;
 }
 
 export class AuthResponse {

@@ -1,0 +1,8 @@
+input ChangePassDTO {
+  oldPass: String!
+  newPass: String!
+}
+
+type Mutation {
+  changePass(dto: ChangePassDTO): String
+}
