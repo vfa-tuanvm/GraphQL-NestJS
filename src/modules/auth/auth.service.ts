@@ -29,7 +29,27 @@ export class AuthService {
     });
   }
 
-  async signIn(dto: SignInDTO): Promise<string> {
+  async signJWTRefeshToken(username: string): Promise<string> {
+    const secret: string = this.config.get('JWT_REFRESH_SECRET');
+    const payload: IJWTInfo = {
+      username,
+    };
+
+    let expiresIn = this.config.get('JWT_REFRESH_EXPIRATION');
+
+    return this.jwtService.signAsync(payload, {
+      expiresIn: expiresIn,
+      secret,
+    });
+  }
+
+  async createAuthToken(username: string) {
+    const accessToken = await this.signJWTToken(username);
+    const refreshToken = await this.signJWTRefeshToken(username);
+    return { accessToken, refreshToken };
+  }
+
+  async signIn(dto: SignInDTO) {
     const account = await this.accountService.findOne(dto.username);
 
     const isMatch = await bcrypt.compare(dto.password, account.password);
@@ -42,6 +62,6 @@ export class AuthService {
       });
     }
 
-    return this.signJWTToken(dto.username);
+    return this.createAuthToken(dto.username);
   }
 }

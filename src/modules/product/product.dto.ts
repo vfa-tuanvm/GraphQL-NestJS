@@ -12,6 +12,7 @@ export class CreateProductDTO {
   @Field(() => Number)
   @Max(1000)
   @Min(0)
+  @IsNotEmpty()
   quantity: number;
 
   @Field(() => String)
@@ -19,6 +20,7 @@ export class CreateProductDTO {
 
   @Field(() => String)
   @IsUUID()
+  @IsNotEmpty()
   categoryId: string;
 
   @Field(() => GraphQLUpload)

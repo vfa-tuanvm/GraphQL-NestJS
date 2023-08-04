@@ -8,7 +8,16 @@ input SignupDTO {
   password: String!
 }
 
+type Query {
+  refreshToken: AuthResponse
+}
+
 type Mutation {
-  signin(dto: SignInDTO!): String!
+  signin(dto: SignInDTO!): AuthResponse!
   signup(dto: SignupDTO!): String!
+}
+
+type AuthResponse {
+  accessToken: String!
+  refreshToken: String!
 }

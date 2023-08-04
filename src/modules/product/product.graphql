@@ -1,3 +1,5 @@
+scalar Date
+
 type Product {
   id: String!
   name: String!
@@ -5,6 +7,8 @@ type Product {
   description: String!
   image: String!
   category: Category!
+  createdAt: Date
+  updatedAt: Date
 }
 
 type Query {

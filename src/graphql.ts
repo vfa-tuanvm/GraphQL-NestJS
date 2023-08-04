@@ -52,8 +52,20 @@ export class PageInfo {
     currentPage: number;
 }
 
+export abstract class IQuery {
+    abstract refreshToken(): Nullable<AuthResponse> | Promise<Nullable<AuthResponse>>;
+
+    abstract getCategories(dto?: Nullable<PageDTO>): Nullable<CategoriesResponse> | Promise<Nullable<CategoriesResponse>>;
+
+    abstract getAllCategories(): Nullable<Category[]> | Promise<Nullable<Category[]>>;
+
+    abstract getProductById(id: string): Product | Promise<Product>;
+
+    abstract getProducts(dto: PageDTO): ProductsResponse | Promise<ProductsResponse>;
+}
+
 export abstract class IMutation {
-    abstract signin(dto: SignInDTO): string | Promise<string>;
+    abstract signin(dto: SignInDTO): AuthResponse | Promise<AuthResponse>;
 
     abstract signup(dto: SignupDTO): string | Promise<string>;
 
@@ -70,20 +82,15 @@ export abstract class IMutation {
     abstract deleteProduct(id: string): string | Promise<string>;
 }
 
+export class AuthResponse {
+    accessToken: string;
+    refreshToken: string;
+}
+
 export class Category {
     id: string;
     name: string;
     products: Product[];
-}
-
-export abstract class IQuery {
-    abstract getCategories(dto?: Nullable<PageDTO>): Nullable<CategoriesResponse> | Promise<Nullable<CategoriesResponse>>;
-
-    abstract getAllCategories(): Nullable<Category[]> | Promise<Nullable<Category[]>>;
-
-    abstract getProductById(id: string): Product | Promise<Product>;
-
-    abstract getProducts(dto: PageDTO): ProductsResponse | Promise<ProductsResponse>;
 }
 
 export class CategoriesResponse {
@@ -98,6 +105,8 @@ export class Product {
     description: string;
     image: string;
     category: Category;
+    createdAt?: Nullable<Date>;
+    updatedAt?: Nullable<Date>;
 }
 
 export class ProductsResponse {

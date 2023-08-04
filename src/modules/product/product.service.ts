@@ -26,7 +26,8 @@ export class ProductService {
   async create(dto: CreateProductDTO): Promise<Product> {
     const category = await this.categoryService.findById(dto.categoryId);
 
-    const file = await dto.image;
+    const file = await dto.image.file;
+    console.log('file: ', file);
 
     const uploadImageResult = await this.cloudinaryService.uploadImage(
       file,
@@ -79,7 +80,7 @@ export class ProductService {
     }
 
     if (dto.image) {
-      const file = await dto.image;
+      const file = await dto.image.file;
 
       const uploadImageResult = await this.cloudinaryService.uploadImage(
         file,
@@ -148,6 +149,9 @@ export class ProductService {
   async getProducts(dto: PageDTO) {
     const total = await this.productRepository.count();
     const products = await this.productRepository.find({
+      relations: {
+        category: true,
+      },
       take: dto.limit,
       skip: (dto.page - 1) * dto.limit,
     });
