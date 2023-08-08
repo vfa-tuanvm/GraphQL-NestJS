@@ -92,6 +92,7 @@ export abstract class IQuery {
 export class AuthResponse {
     accessToken: string;
     refreshToken: string;
+    username: string;
 }
 
 export class Category {

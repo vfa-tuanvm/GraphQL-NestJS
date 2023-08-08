@@ -47,26 +47,32 @@ export class ProductService {
       });
     }
 
-    const queryBuider = this.productRepository.createQueryBuilder().update();
+    let queryBuider = this.productRepository.createQueryBuilder().update();
+
+    let update = {};
 
     if (dto.name) {
-      queryBuider.set({ name: dto.name });
+      // queryBuider = queryBuider.set({ name: dto.name });
+      update = { name: dto.name };
     }
 
     if (dto.categoryId) {
       const category = await this.categoryService.findById(dto.categoryId);
-      queryBuider.set({ category });
+      // queryBuider = queryBuider.set({ category });
+      update = { ...update, category };
     }
 
     if (dto.description) {
-      queryBuider.set({ description: dto.description });
+      // queryBuider = queryBuider.set({ description: dto.description });
+      update = { ...update, description: dto.description };
     }
 
     if (dto.quantity) {
-      queryBuider.set({ quantity: dto.quantity });
+      // queryBuider = queryBuider.set({ quantity: dto.quantity });
+      update = { ...update, quantity: dto.quantity };
     }
 
-    await queryBuider.where('id = :id', { id }).execute();
+    await queryBuider.set(update).where('id = :id', { id }).execute();
 
     const result = await this.productRepository.findOne({
       relations: {

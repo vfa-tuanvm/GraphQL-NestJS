@@ -20,4 +20,5 @@ type Mutation {
 type AuthResponse {
   accessToken: String!
   refreshToken: String!
+  username: String!
 }

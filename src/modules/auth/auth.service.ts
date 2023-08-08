@@ -62,6 +62,9 @@ export class AuthService {
       });
     }
 
-    return this.createAuthToken(dto.username);
+    return {
+      ...(await this.createAuthToken(dto.username)),
+      username: dto.username,
+    };
   }
 }

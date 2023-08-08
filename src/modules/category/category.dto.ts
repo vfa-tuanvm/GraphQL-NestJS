@@ -4,13 +4,13 @@ import { IsNotEmpty } from 'class-validator';
 @InputType()
 export class CreateCategoryDTO {
   @Field()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Name is required' })
   name: string;
 }
 
 @InputType()
 export class UpdateCategoryDTO {
   @Field()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Name is required' })
   name: string;
 }

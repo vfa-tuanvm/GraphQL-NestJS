@@ -12,6 +12,7 @@ export class AccountResolver {
 
   @Mutation('changePass')
   async changePass(@GqlUser() user: IJWTInfo, @Args('dto') dto: ChangePassDTO) {
+    // console.log('user: ', user);
     return this.accountService.changePass(user.username, dto);
   }
 }

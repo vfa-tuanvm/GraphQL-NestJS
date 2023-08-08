@@ -4,11 +4,11 @@ import { IsNotEmpty, Matches } from 'class-validator';
 @InputType()
 export class SignInDTO {
   @Field()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Username is required' })
   username: string;
 
   @Field()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Password is required' })
   password: string;
 }
 

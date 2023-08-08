@@ -1,4 +1,4 @@
 type PageInfo {
-  totalCount: Float!
-  currentPage: Float!
+  totalCount: Int!
+  currentPage: Int!
 }
