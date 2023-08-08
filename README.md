@@ -2,10 +2,11 @@
 
 ## Description
 
-- This is a sample project for crud product and category.
+- This is a sample project for CRUD product and category.
 - Main features:
   - Sign in, sign up
-  - Crud Product, category
+  - CRUD Product, category
+  - Change password
 - Technologies: NestJS, GrapQL, TypeORM, MySQL
 
 ## EER Diagram
