@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Max, Min } from 'class-validator';
+import { Min } from 'class-validator';
 @InputType()
 export class PageDTO {
   @Field()
