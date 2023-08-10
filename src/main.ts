@@ -21,6 +21,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
   await app.listen(PORT);
 
+  console.log('App is running');
+
   console.log(`[⚡Server] Server is running on: ${API_SERVER}`);
 }
 bootstrap();
