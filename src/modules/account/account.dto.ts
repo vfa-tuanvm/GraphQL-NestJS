@@ -3,25 +3,29 @@ import { IsNotEmpty, Matches } from 'class-validator';
 
 @InputType()
 export class CreateAccountDTO {
-  @Field((type) => String)
-  @IsNotEmpty({ message: 'Username is required' })
-  username: string;
+	/* eslint-disable  @typescript-eslint/no-unused-vars */
+	@Field(type => String)
+	@IsNotEmpty({ message: 'Username is required' })
+	username: string;
 
-  @Field((type) => String)
-  @IsNotEmpty({ message: 'Password is required' })
-  password: string;
+	/* eslint-disable  @typescript-eslint/no-unused-vars */
+	@Field(type => String)
+	@IsNotEmpty({ message: 'Password is required' })
+	password: string;
 }
 
 @InputType()
 export class ChangePassDTO {
-  @Field((type) => String)
-  @IsNotEmpty({ message: 'Old pass is required' })
-  oldPass: string;
+	/* eslint-disable  @typescript-eslint/no-unused-vars */
+	@Field(type => String)
+	@IsNotEmpty({ message: 'Old pass is required' })
+	oldPass: string;
 
-  @Field((type) => String)
-  @IsNotEmpty({ message: 'New pass is required' })
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
-  })
-  newPass: string;
+	/* eslint-disable  @typescript-eslint/no-unused-vars */
+	@Field(type => String)
+	@IsNotEmpty({ message: 'New pass is required' })
+	@Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+		message: 'password too weak',
+	})
+	newPass: string;
 }

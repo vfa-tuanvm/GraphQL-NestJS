@@ -8,11 +8,14 @@ import { ChangePassDTO } from './account.dto';
 @Resolver()
 @UseGuards(JwtAuthGuard)
 export class AccountResolver {
-  constructor(private readonly accountService: AccountService) {}
+	constructor(private readonly accountService: AccountService) {}
 
-  @Mutation('changePass')
-  async changePass(@GqlUser() user: IJWTInfo, @Args('dto') dto: ChangePassDTO) {
-    // console.log('user: ', user);
-    return this.accountService.changePass(user.username, dto);
-  }
+	@Mutation('changePass')
+	async changePass(
+		@GqlUser() user: IJWTInfo,
+		@Args('dto') dto: ChangePassDTO,
+	) {
+		// console.log('user: ', user);
+		return this.accountService.changePass(user.username, dto);
+	}
 }

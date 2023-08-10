@@ -5,16 +5,16 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class JwtRefreshGuard extends AuthGuard('jwt-refresh-token') {
-  constructor(private jwtService: JwtService) {
-    super();
-  }
+	constructor(private jwtService: JwtService) {
+		super();
+	}
 
-  canActivate(context: ExecutionContext) {
-    return super.canActivate(context);
-  }
+	canActivate(context: ExecutionContext) {
+		return super.canActivate(context);
+	}
 
-  public getRequest(context: ExecutionContext) {
-    const ctx = GqlExecutionContext.create(context);
-    return ctx.getContext().req;
-  }
+	public getRequest(context: ExecutionContext) {
+		const ctx = GqlExecutionContext.create(context);
+		return ctx.getContext().req;
+	}
 }
