@@ -10,6 +10,7 @@ import { AccountModule } from './modules/account/account.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
 	imports: [
@@ -48,6 +49,7 @@ import { join } from 'path';
 		AccountModule,
 		CloudinaryModule,
 		AuthModule,
+		UserModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
