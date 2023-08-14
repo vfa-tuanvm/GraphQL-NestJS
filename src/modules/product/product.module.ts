@@ -7,11 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import Product from '../../entity/product.entity';
 
 @Module({
-  imports: [
-    CloudinaryModule,
-    CategoryModule,
-    TypeOrmModule.forFeature([Product]),
-  ],
-  providers: [ProductService, ProductResolver],
+	imports: [
+		CloudinaryModule,
+		CategoryModule,
+		TypeOrmModule.forFeature([Product]),
+	],
+	providers: [ProductService, ProductResolver],
 })
 export class ProductModule {}
