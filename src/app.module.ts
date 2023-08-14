@@ -7,9 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { DatabaseModule } from './modules/database/database.module';
 import { AccountModule } from './modules/account/account.module';
-import { CategoryModule } from './modules/category/category.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
-import { ProductModule } from './modules/product/product.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
 
@@ -48,9 +46,7 @@ import { join } from 'path';
 			},
 		}),
 		AccountModule,
-		CategoryModule,
 		CloudinaryModule,
-		ProductModule,
 		AuthModule,
 	],
 	controllers: [AppController],

@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { AccountService } from '../account/account.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { SignInDTO } from './auth.dto';
-import * as bcrypt from 'bcrypt';
-import { GraphQLError } from 'graphql';
-import { PASSWORD_NOT_MATCH } from '../../constance/error-code';
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private readonly accountService: AccountService,
+		// private readonly accountService: AccountService,
 		private readonly jwtService: JwtService,
 		private readonly config: ConfigService,
 	) {}
@@ -49,22 +44,22 @@ export class AuthService {
 		return { accessToken, refreshToken };
 	}
 
-	async signIn(dto: SignInDTO) {
-		const account = await this.accountService.findOne(dto.username);
+	// async signIn(dto: SignInDTO) {
+	// 	const account = await this.accountService.findOne(dto.username);
 
-		const isMatch = await bcrypt.compare(dto.password, account.password);
+	// 	const isMatch = await bcrypt.compare(dto.password, account.password);
 
-		if (!isMatch) {
-			throw new GraphQLError('Password not match', {
-				extensions: {
-					code: PASSWORD_NOT_MATCH,
-				},
-			});
-		}
+	// 	if (!isMatch) {
+	// 		throw new GraphQLError('Password not match', {
+	// 			extensions: {
+	// 				code: PASSWORD_NOT_MATCH,
+	// 			},
+	// 		});
+	// 	}
 
-		return {
-			...(await this.createAuthToken(dto.username)),
-			username: dto.username,
-		};
-	}
+	// 	return {
+	// 		...(await this.createAuthToken(dto.username)),
+	// 		username: dto.username,
+	// 	};
+	// }
 }
