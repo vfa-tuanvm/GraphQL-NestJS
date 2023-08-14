@@ -1,24 +1,27 @@
-input SignInDTO {
-  username: String!
-  password: String!
+input SignInInput {
+	email: String!
+	password: String!
 }
 
-input SignupDTO {
-  username: String!
-  password: String!
+input SignUpInput {
+	email: String!
+	fullName: String!
+	password: String!
 }
 
 type Query {
-  refreshToken: AuthResponse
+	refreshToken: AuthResponse
+	signin(input: SignInInput!): AuthResponse!
 }
 
 type Mutation {
-  signin(dto: SignInDTO!): AuthResponse!
-  signup(dto: SignupDTO!): String!
+	signup(input: SignUpInput!): AuthResponse!
 }
 
 type AuthResponse {
-  accessToken: String!
-  refreshToken: String!
-  username: String!
+	email: String
+	fullName: String
+	avatar: String
+	accessToken: String!
+	refreshToken: String!
 }

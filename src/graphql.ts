@@ -12,13 +12,14 @@ export class ChangePassDTO {
 	newPass: string;
 }
 
-export class SignInDTO {
-	username: string;
+export class SignInInput {
+	email: string;
 	password: string;
 }
 
-export class SignupDTO {
-	username: string;
+export class SignUpInput {
+	email: string;
+	fullName: string;
 	password: string;
 }
 
@@ -32,21 +33,23 @@ export abstract class IMutation {
 		dto?: Nullable<ChangePassDTO>,
 	): Nullable<string> | Promise<Nullable<string>>;
 
-	abstract signin(dto: SignInDTO): AuthResponse | Promise<AuthResponse>;
-
-	abstract signup(dto: SignupDTO): string | Promise<string>;
+	abstract signup(input: SignUpInput): AuthResponse | Promise<AuthResponse>;
 }
 
 export abstract class IQuery {
 	abstract refreshToken():
 		| Nullable<AuthResponse>
 		| Promise<Nullable<AuthResponse>>;
+
+	abstract signin(input: SignInInput): AuthResponse | Promise<AuthResponse>;
 }
 
 export class AuthResponse {
+	email?: Nullable<string>;
+	fullName?: Nullable<string>;
+	avatar?: Nullable<string>;
 	accessToken: string;
 	refreshToken: string;
-	username: string;
 }
 
 type Nullable<T> = T | null;
