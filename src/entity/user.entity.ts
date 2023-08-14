@@ -16,19 +16,19 @@ class User {
 	@Field()
 	public id: string;
 
-	@Column()
+	@Column({ nullable: true })
 	@Field()
 	public fullName: string;
 
-	@Column()
+	@Column({ nullable: true })
 	@Field()
 	public email: string;
 
-	@Column()
+	@Column({ nullable: true })
 	@Field()
 	public password: string;
 
-	@Column()
+	@Column({ nullable: true })
 	@Field()
 	public avatar: string;
 
