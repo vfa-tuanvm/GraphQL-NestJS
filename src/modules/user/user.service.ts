@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from '../../entity/user.entity';
@@ -23,6 +23,7 @@ export class UserService {
 			throw new GraphQLError('Email has been used', {
 				extensions: {
 					code: CONFLICT,
+					statusCode: HttpStatus.CONFLICT,
 				},
 			});
 		}
@@ -44,6 +45,7 @@ export class UserService {
 			throw new GraphQLError('User not found', {
 				extensions: {
 					code: NOT_FOUND,
+					statusCode: HttpStatus.NOT_FOUND,
 				},
 			});
 		}

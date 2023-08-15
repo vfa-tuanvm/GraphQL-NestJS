@@ -7,19 +7,19 @@ import User from './user.entity';
 class Account {
 	@Field(() => Int)
 	@Column({ primary: true })
-	public socialId: number;
+	socialId: number;
 
 	@Column({ primary: true })
 	@Field()
-	public type: string;
+	type: string;
 
 	@Column()
 	@Field()
-	public email: string;
+	email: string;
 
 	@CreateDateColumn()
 	@Field()
-	public createdAt: string;
+	createdAt: string;
 
 	@ManyToOne(() => User, user => user.socialAccounts)
 	user: User;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { SignInInput, SignUpInput } from './auth.dto';
@@ -16,10 +16,10 @@ export class AuthService {
 		private readonly config: ConfigService,
 	) {}
 
-	async signJWTToken(email: string): Promise<string> {
+	async signJWTToken(userId: string): Promise<string> {
 		const secret: string = this.config.get('JWT_SECRET');
 		const payload: IJWTInfo = {
-			email,
+			userId,
 		};
 
 		const expiresIn = this.config.get('JWT_EXPIRATION');
@@ -30,10 +30,10 @@ export class AuthService {
 		});
 	}
 
-	async signJWTRefeshToken(email: string): Promise<string> {
+	async signJWTRefeshToken(userId: string): Promise<string> {
 		const secret: string = this.config.get('JWT_REFRESH_SECRET');
 		const payload: IJWTInfo = {
-			email,
+			userId,
 		};
 
 		const expiresIn = this.config.get('JWT_REFRESH_EXPIRATION');
@@ -59,6 +59,7 @@ export class AuthService {
 			throw new GraphQLError('Password not match', {
 				extensions: {
 					code: PASSWORD_NOT_MATCH,
+					statusCode: HttpStatus.NOT_ACCEPTABLE,
 				},
 			});
 		}
@@ -72,13 +73,8 @@ export class AuthService {
 			refreshToken,
 		};
 
-		if (user.fullName) {
-			result.fullName = user.fullName;
-		}
-
-		if (user.avatar) {
-			result.avatar = user.avatar;
-		}
+		result.fullName = user.fullName;
+		result.avatar = user.avatar;
 
 		return result;
 	}

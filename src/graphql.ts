@@ -7,11 +7,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export class ChangePassDTO {
-	oldPass: string;
-	newPass: string;
-}
-
 export class SignInInput {
 	email: string;
 	password: string;
@@ -28,20 +23,16 @@ export class PageInfo {
 	currentPage: number;
 }
 
-export abstract class IMutation {
-	abstract changePass(
-		dto?: Nullable<ChangePassDTO>,
-	): Nullable<string> | Promise<Nullable<string>>;
-
-	abstract signup(input: SignUpInput): AuthResponse | Promise<AuthResponse>;
-}
-
 export abstract class IQuery {
 	abstract refreshToken():
 		| Nullable<AuthResponse>
 		| Promise<Nullable<AuthResponse>>;
 
 	abstract signin(input: SignInInput): AuthResponse | Promise<AuthResponse>;
+}
+
+export abstract class IMutation {
+	abstract signup(input: SignUpInput): AuthResponse | Promise<AuthResponse>;
 }
 
 export class AuthResponse {
