@@ -27,11 +27,11 @@ export abstract class IQuery {
 	abstract refreshToken():
 		| Nullable<AuthResponse>
 		| Promise<Nullable<AuthResponse>>;
-
-	abstract signin(input: SignInInput): AuthResponse | Promise<AuthResponse>;
 }
 
 export abstract class IMutation {
+	abstract signin(input: SignInInput): AuthResponse | Promise<AuthResponse>;
+
 	abstract signup(input: SignUpInput): AuthResponse | Promise<AuthResponse>;
 }
 

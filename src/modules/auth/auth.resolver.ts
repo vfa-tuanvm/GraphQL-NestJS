@@ -15,7 +15,7 @@ export class AuthResolver {
 		return this.authService.createAuthToken(user.userId);
 	}
 
-	@Query('signin')
+	@Mutation('signin')
 	async signin(
 		@Args('input', { type: () => SignInInput }) input: SignInInput,
 	) {
