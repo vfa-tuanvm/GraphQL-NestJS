@@ -11,10 +11,10 @@ input SignUpInput {
 
 type Query {
 	refreshToken: AuthResponse
-	signin(input: SignInInput!): AuthResponse!
 }
 
 type Mutation {
+	signin(input: SignInInput!): AuthResponse!
 	signup(input: SignUpInput!): AuthResponse!
 }
 

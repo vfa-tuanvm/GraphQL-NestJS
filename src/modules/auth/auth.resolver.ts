@@ -7,17 +7,15 @@ import { JwtRefreshGuard } from './jwt-refresh-auth.guard';
 
 @Resolver()
 export class AuthResolver {
-	constructor(
-		private authService: AuthService, // private accountService: AccountService,
-	) {}
+	constructor(private authService: AuthService) {}
 
 	@UseGuards(JwtRefreshGuard)
 	@Query('refreshToken')
 	async refreshToken(@GqlUser() user: IJWTInfo) {
-		return this.authService.createAuthToken(user.email);
+		return this.authService.createAuthToken(user.userId);
 	}
 
-	@Query('signin')
+	@Mutation('signin')
 	async signin(
 		@Args('input', { type: () => SignInInput }) input: SignInInput,
 	) {
