@@ -14,23 +14,23 @@ import Account from './account.entity';
 class User {
 	@PrimaryGeneratedColumn('uuid')
 	@Field()
-	public id: string;
+	id: string;
 
 	@Column({ nullable: true })
 	@Field()
-	public fullName: string;
+	fullName: string;
 
 	@Column({ nullable: true })
 	@Field()
-	public email: string;
+	email: string;
 
 	@Column({ nullable: true })
 	@Field()
-	public password: string;
+	password: string;
 
 	@Column({ nullable: true })
 	@Field()
-	public avatar: string;
+	avatar: string;
 
 	@OneToMany(() => Account, account => account.user)
 	socialAccounts: Account[];
