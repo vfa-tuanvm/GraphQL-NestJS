@@ -1,13 +1,13 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { Entity, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import User from './user.entity';
 
 @ObjectType()
 @Entity()
 class Account {
-	@Field(() => Int)
+	@Field()
 	@Column({ primary: true })
-	socialId: number;
+	socialId: string;
 
 	@Column({ primary: true })
 	@Field()
