@@ -43,6 +43,7 @@ import { AccountModule } from './modules/account/account.module';
 					code: error.extensions?.code || 'SERVER_ERROR',
 					name: error.extensions?.exception?.name || error.name,
 					statusCode:
+						error.extensions?.statusCode ||
 						error.extensions?.exception?.response?.message ||
 						HttpStatus.BAD_REQUEST,
 				};
