@@ -13,7 +13,7 @@ class Account {
 	@Field()
 	type: string;
 
-	@Column()
+	@Column({ nullable: true })
 	@Field()
 	email: string;
 
