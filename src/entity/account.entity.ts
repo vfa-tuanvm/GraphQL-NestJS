@@ -1,22 +1,28 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Entity, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import User from './user.entity';
 
 @ObjectType()
 @Entity()
-@Unique(['username'])
 class Account {
-	@PrimaryGeneratedColumn('increment')
-	/* eslint-disable  @typescript-eslint/no-unused-vars */
-	@Field(type => Int)
-	public id: number;
+	@Field(() => Int)
+	@Column({ primary: true })
+	socialId: number;
 
-	@Column({ length: 20 })
+	@Column({ primary: true })
 	@Field()
-	public username: string;
+	type: string;
 
 	@Column()
 	@Field()
-	public password: string;
+	email: string;
+
+	@CreateDateColumn()
+	@Field()
+	createdAt: string;
+
+	@ManyToOne(() => User, user => user.socialAccounts)
+	user: User;
 }
 
 export default Account;

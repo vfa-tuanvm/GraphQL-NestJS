@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpStatus, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApolloDriver } from '@nestjs/apollo';
@@ -6,12 +6,11 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { DatabaseModule } from './modules/database/database.module';
-import { AccountModule } from './modules/account/account.module';
-import { CategoryModule } from './modules/category/category.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
-import { ProductModule } from './modules/product/product.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
+import { UserModule } from './modules/user/user.module';
+import { AccountModule } from './modules/account/account.module';
 
 @Module({
 	imports: [
@@ -43,15 +42,18 @@ import { join } from 'path';
 						error.message,
 					code: error.extensions?.code || 'SERVER_ERROR',
 					name: error.extensions?.exception?.name || error.name,
+					statusCode:
+						error.extensions?.statusCode ||
+						error.extensions?.exception?.response?.message ||
+						HttpStatus.BAD_REQUEST,
 				};
 				return graphQLFormattedError;
 			},
 		}),
-		AccountModule,
-		CategoryModule,
 		CloudinaryModule,
-		ProductModule,
+		AccountModule,
 		AuthModule,
+		UserModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

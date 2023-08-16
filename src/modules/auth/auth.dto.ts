@@ -1,11 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 
 @InputType()
-export class SignInDTO {
+export class SignInInput {
 	@Field()
-	@IsNotEmpty({ message: 'Username is required' })
-	username: string;
+	@IsNotEmpty({ message: 'Email is required' })
+	@IsEmail()
+	email: string;
 
 	@Field()
 	@IsNotEmpty({ message: 'Password is required' })
@@ -13,13 +14,18 @@ export class SignInDTO {
 }
 
 @InputType()
-export class SignupDTO {
+export class SignUpInput {
 	@Field()
-	@IsNotEmpty()
-	username: string;
+	@IsNotEmpty({ message: 'Email is required' })
+	@IsEmail()
+	email: string;
 
 	@Field()
-	@IsNotEmpty()
+	@IsNotEmpty({ message: 'Full name is required' })
+	fullName: string;
+
+	@Field()
+	@IsNotEmpty({ message: 'Password is required' })
 	@Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
 		message: 'password too weak',
 	})

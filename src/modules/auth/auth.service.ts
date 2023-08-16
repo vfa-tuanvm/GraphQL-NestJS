@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { AccountService } from '../account/account.service';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { SignInDTO } from './auth.dto';
+import { SignInInput, SignUpInput } from './auth.dto';
+import { UserService } from '../user/user.service';
+import { AuthResponse } from './auth.response';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 import { PASSWORD_NOT_MATCH } from '../../constance/error-code';
@@ -10,15 +11,15 @@ import { PASSWORD_NOT_MATCH } from '../../constance/error-code';
 @Injectable()
 export class AuthService {
 	constructor(
-		private readonly accountService: AccountService,
+		private readonly userService: UserService,
 		private readonly jwtService: JwtService,
 		private readonly config: ConfigService,
 	) {}
 
-	async signJWTToken(username: string): Promise<string> {
+	async signJWTToken(userId: string): Promise<string> {
 		const secret: string = this.config.get('JWT_SECRET');
 		const payload: IJWTInfo = {
-			username,
+			userId,
 		};
 
 		const expiresIn = this.config.get('JWT_EXPIRATION');
@@ -29,10 +30,10 @@ export class AuthService {
 		});
 	}
 
-	async signJWTRefeshToken(username: string): Promise<string> {
+	async signJWTRefeshToken(userId: string): Promise<string> {
 		const secret: string = this.config.get('JWT_REFRESH_SECRET');
 		const payload: IJWTInfo = {
-			username,
+			userId,
 		};
 
 		const expiresIn = this.config.get('JWT_REFRESH_EXPIRATION');
@@ -49,22 +50,48 @@ export class AuthService {
 		return { accessToken, refreshToken };
 	}
 
-	async signIn(dto: SignInDTO) {
-		const account = await this.accountService.findOne(dto.username);
+	async signIn(input: SignInInput) {
+		const user = await this.userService.findByEmail(input.email);
 
-		const isMatch = await bcrypt.compare(dto.password, account.password);
+		const isMatch = await bcrypt.compare(input.password, user.password);
 
 		if (!isMatch) {
 			throw new GraphQLError('Password not match', {
 				extensions: {
 					code: PASSWORD_NOT_MATCH,
+					statusCode: HttpStatus.NOT_ACCEPTABLE,
 				},
 			});
 		}
 
-		return {
-			...(await this.createAuthToken(dto.username)),
-			username: dto.username,
+		const accessToken = await this.signJWTToken(user.email);
+		const refreshToken = await this.signJWTRefeshToken(user.email);
+
+		const result: AuthResponse = {
+			email: user.email,
+			accessToken,
+			refreshToken,
 		};
+
+		result.fullName = user.fullName;
+		result.avatar = user.avatar;
+
+		return result;
+	}
+
+	async signUp(input: SignUpInput) {
+		const user = await this.userService.create(input);
+
+		const accessToken = await this.signJWTToken(user.email);
+		const refreshToken = await this.signJWTRefeshToken(user.email);
+
+		const result: AuthResponse = {
+			email: user.email,
+			fullName: user.fullName,
+			accessToken,
+			refreshToken,
+		};
+
+		return result;
 	}
 }
