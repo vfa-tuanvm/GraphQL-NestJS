@@ -18,6 +18,11 @@ export class SignUpInput {
 	password: string;
 }
 
+export class LoginFacebookInput {
+	code: string;
+	redirectURL: string;
+}
+
 export class PageInfo {
 	totalCount: number;
 	currentPage: number;
@@ -33,6 +38,10 @@ export abstract class IMutation {
 	abstract signin(input: SignInInput): AuthResponse | Promise<AuthResponse>;
 
 	abstract signup(input: SignUpInput): AuthResponse | Promise<AuthResponse>;
+
+	abstract loginFacebook(
+		input: LoginFacebookInput,
+	): AuthResponse | Promise<AuthResponse>;
 }
 
 export class AuthResponse {

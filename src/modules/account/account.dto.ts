@@ -1,7 +1,7 @@
 import User from '../../entity/user.entity';
 
 export class CreateAccountDTO {
-	sociaId: string;
+	socialId: string;
 	type: string;
 	email?: string;
 	user: User;

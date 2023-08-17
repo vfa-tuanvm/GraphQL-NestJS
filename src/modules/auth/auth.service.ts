@@ -6,8 +6,7 @@ import { UserService } from '../user/user.service';
 import { AuthResponse } from './auth.response';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
-import { CODE_NOT_VALID, PASSWORD_NOT_MATCH } from '../../constance/error-code';
-import { AccountService } from '../account/account.service';
+import { PASSWORD_NOT_MATCH, NOT_FOUND } from '../../constance/error-code';
 import { FacebookService } from '../facebook/facebook.service';
 
 @Injectable()
@@ -16,7 +15,6 @@ export class AuthService {
 		private readonly userService: UserService,
 		private readonly jwtService: JwtService,
 		private readonly config: ConfigService,
-		private readonly accountService: AccountService,
 		private readonly facebookService: FacebookService,
 	) {}
 
@@ -56,6 +54,15 @@ export class AuthService {
 
 	async signIn(input: SignInInput) {
 		const user = await this.userService.findByEmail(input.email);
+
+		if (!user) {
+			throw new GraphQLError('User not found', {
+				extensions: {
+					code: NOT_FOUND,
+					statusCode: HttpStatus.NOT_FOUND,
+				},
+			});
+		}
 
 		const isMatch = await bcrypt.compare(input.password, user.password);
 
@@ -100,23 +107,22 @@ export class AuthService {
 	}
 
 	async loginFacebook(code: string, redirectURL: string) {
-		const valid = await this.facebookService.verifyToken(code);
-
-		if (!valid) {
-			throw new GraphQLError('Can not login with Facebook', {
-				extensions: {
-					code: CODE_NOT_VALID,
-					statusCode: HttpStatus.NOT_ACCEPTABLE,
-				},
-			});
-		}
-
-		const { access_token } = await this.facebookService.getToken(
+		const loginResult = await this.facebookService.preLogin(
 			code,
 			redirectURL,
 		);
-		console.log('access_token: ', access_token);
 
-		// const userInfo = await this.facebookService.getUserInfo(access_token);
+		const accessToken = await this.signJWTToken(loginResult.id);
+		const refreshToken = await this.signJWTRefeshToken(loginResult.id);
+
+		const result: AuthResponse = {
+			accessToken,
+			refreshToken,
+			fullName: loginResult.fullName,
+			avatar: loginResult.avatar,
+			email: loginResult.email,
+		};
+
+		return result;
 	}
 }

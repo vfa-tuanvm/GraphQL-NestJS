@@ -1,22 +1,20 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-	IFacebookToken,
-	IFacebookUser,
-	IFacebookVerifyToken,
-} from './facebook.response';
+import { IFacebookToken, IFacebookUser } from './facebook.response';
 import { GraphQLError } from 'graphql';
-import {
-	CAN_NOT_GET_FACEBOOK_TOKEN,
-	CAN_NOT_VERIFY_FACEBOOK_TOKEN,
-} from '../../constance/error-code';
+import { CAN_NOT_GET_FACEBOOK_TOKEN } from '../../constance/error-code';
+import { UserService } from '../user/user.service';
+import { AccountService } from '../account/account.service';
+import { SocialType } from '../../constance/social-account';
 
 @Injectable()
 export class FacebookService {
 	constructor(
 		private readonly httpService: HttpService,
 		private readonly configService: ConfigService,
+		private readonly accountService: AccountService,
+		private readonly userService: UserService,
 	) {}
 
 	async getToken(code: string, redirectURL: string) {
@@ -43,34 +41,6 @@ export class FacebookService {
 		}
 	}
 
-	async verifyToken(token: string) {
-		try {
-			const appToken = this.configService.get<string>('FB_APP_TOKEN');
-			const appId = this.configService.get<string>('FB_APP_ID');
-
-			const response = (
-				await this.httpService.axiosRef.get<IFacebookVerifyToken>(
-					`https://graph.facebook.com/debug_token?input_token=${token}&access_token=${appToken}`,
-				)
-			).data;
-
-			const { is_valid, app_id } = response.data;
-
-			if (is_valid && app_id === appId) {
-				return true;
-			}
-
-			return false;
-		} catch (error) {
-			throw new GraphQLError('Can not verify facebook token', {
-				extensions: {
-					code: CAN_NOT_VERIFY_FACEBOOK_TOKEN,
-					statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-				},
-			});
-		}
-	}
-
 	async getUserInfo(accessToken: string) {
 		const res = (
 			await this.httpService.axiosRef.get<IFacebookUser>(
@@ -79,5 +49,40 @@ export class FacebookService {
 		).data;
 
 		return res;
+	}
+
+	async preLogin(code: string, redirectURL: string) {
+		const { access_token } = await this.getToken(code, redirectURL);
+
+		const { id, email, name, picture } = await this.getUserInfo(
+			access_token,
+		);
+
+		const account = await this.accountService.findByIdAndType(
+			id,
+			SocialType.Facebook,
+		);
+
+		if (account) {
+			return account.user;
+		}
+
+		const user = await this.userService.createUserSocial(
+			{
+				email,
+				fullName: name,
+				avatar: picture.data.url,
+			},
+			SocialType.Facebook,
+		);
+
+		await this.accountService.create({
+			socialId: id.toString(),
+			type: SocialType.Facebook,
+			email,
+			user,
+		});
+
+		return user;
 	}
 }

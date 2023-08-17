@@ -9,6 +9,11 @@ input SignUpInput {
 	password: String!
 }
 
+input LoginFacebookInput {
+	code: String!
+	redirectURL: String!
+}
+
 type Query {
 	refreshToken: AuthResponse
 }
@@ -16,6 +21,7 @@ type Query {
 type Mutation {
 	signin(input: SignInInput!): AuthResponse!
 	signup(input: SignUpInput!): AuthResponse!
+	loginFacebook(input: LoginFacebookInput!): AuthResponse!
 }
 
 type AuthResponse {

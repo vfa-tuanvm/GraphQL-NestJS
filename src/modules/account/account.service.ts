@@ -16,10 +16,15 @@ export class AccountService {
 		await this.accountRepository.save(account);
 	}
 
-	// async findByIdAndType(socialId: string, type: string) {
-	// 	const account = await this.accountRepository.findOneBy({
-	// 		socialId,
-	// 		type,
-	// 	});
-	// }
+	async findByIdAndType(socialId: string, type: string) {
+		const account = await this.accountRepository.findOne({
+			where: {
+				socialId,
+				type,
+			},
+			relations: { user: true },
+		});
+
+		return account;
+	}
 }
