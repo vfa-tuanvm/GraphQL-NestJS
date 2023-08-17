@@ -10,6 +10,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
 import { UserModule } from './modules/user/user.module';
+import { FacebookModule } from './modules/facebook/facebook.module';
 import { AccountModule } from './modules/account/account.module';
 
 @Module({
@@ -54,6 +55,7 @@ import { AccountModule } from './modules/account/account.module';
 		AccountModule,
 		AuthModule,
 		UserModule,
+		FacebookModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

@@ -6,7 +6,8 @@ import { UserService } from '../user/user.service';
 import { AuthResponse } from './auth.response';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
-import { PASSWORD_NOT_MATCH } from '../../constance/error-code';
+import { PASSWORD_NOT_MATCH, NOT_FOUND } from '../../constance/error-code';
+import { FacebookService } from '../facebook/facebook.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
 		private readonly userService: UserService,
 		private readonly jwtService: JwtService,
 		private readonly config: ConfigService,
+		private readonly facebookService: FacebookService,
 	) {}
 
 	async signJWTToken(userId: string): Promise<string> {
@@ -53,6 +55,15 @@ export class AuthService {
 	async signIn(input: SignInInput) {
 		const user = await this.userService.findByEmail(input.email);
 
+		if (!user) {
+			throw new GraphQLError('User not found', {
+				extensions: {
+					code: NOT_FOUND,
+					statusCode: HttpStatus.NOT_FOUND,
+				},
+			});
+		}
+
 		const isMatch = await bcrypt.compare(input.password, user.password);
 
 		if (!isMatch) {
@@ -90,6 +101,26 @@ export class AuthService {
 			fullName: user.fullName,
 			accessToken,
 			refreshToken,
+		};
+
+		return result;
+	}
+
+	async loginFacebook(code: string, redirectURL: string) {
+		const loginResult = await this.facebookService.preLogin(
+			code,
+			redirectURL,
+		);
+
+		const accessToken = await this.signJWTToken(loginResult.id);
+		const refreshToken = await this.signJWTRefeshToken(loginResult.id);
+
+		const result: AuthResponse = {
+			accessToken,
+			refreshToken,
+			fullName: loginResult.fullName,
+			avatar: loginResult.avatar,
+			email: loginResult.email,
 		};
 
 		return result;

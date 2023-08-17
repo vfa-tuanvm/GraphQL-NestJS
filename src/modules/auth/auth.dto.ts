@@ -31,3 +31,14 @@ export class SignUpInput {
 	})
 	password: string;
 }
+
+@InputType()
+export class loginFacebook {
+	@Field()
+	@IsNotEmpty()
+	code: string;
+
+	@Field()
+	@IsNotEmpty()
+	redirectURL: string;
+}
