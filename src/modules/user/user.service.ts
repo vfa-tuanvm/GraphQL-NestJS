@@ -61,6 +61,12 @@ export class UserService {
 				if (
 					!existedUser.socialAccounts.some(acc => acc.type === type)
 				) {
+					if (!existedUser.avatar && dto.avatar) {
+						await this.userRepository.update(
+							{ id: existedUser.id },
+							{ avatar: dto.avatar },
+						);
+					}
 					return existedUser;
 				}
 

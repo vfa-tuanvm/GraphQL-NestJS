@@ -35,4 +35,9 @@ export class AuthResolver {
 	) {
 		return this.authService.loginFacebook(input.code, input.redirectURL);
 	}
+
+	@Mutation('loginGoogle')
+	async loginGoogle(@Args('input') code: string) {
+		return this.authService.loginGoogle(code);
+	}
 }

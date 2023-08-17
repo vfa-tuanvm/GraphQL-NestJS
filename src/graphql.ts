@@ -42,6 +42,8 @@ export abstract class IMutation {
 	abstract loginFacebook(
 		input: LoginFacebookInput,
 	): AuthResponse | Promise<AuthResponse>;
+
+	abstract loginGoogle(input: string): AuthResponse | Promise<AuthResponse>;
 }
 
 export class AuthResponse {
