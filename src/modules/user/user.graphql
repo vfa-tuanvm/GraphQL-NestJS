@@ -1,0 +1,8 @@
+type AccountResponse {
+	socialId: String!
+	type: String!
+}
+
+type Query {
+	getAccountsLinked: [AccountResponse]!
+}

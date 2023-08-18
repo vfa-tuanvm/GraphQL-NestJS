@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 import { PASSWORD_NOT_MATCH, NOT_FOUND } from '../../constance/error-code';
 import { FacebookService } from '../facebook/facebook.service';
+import { GoogleService } from '../google/google.service';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
 		private readonly jwtService: JwtService,
 		private readonly config: ConfigService,
 		private readonly facebookService: FacebookService,
+		private readonly googleService: GoogleService,
 	) {}
 
 	async signJWTToken(userId: string): Promise<string> {
@@ -111,6 +113,23 @@ export class AuthService {
 			code,
 			redirectURL,
 		);
+
+		const accessToken = await this.signJWTToken(loginResult.id);
+		const refreshToken = await this.signJWTRefeshToken(loginResult.id);
+
+		const result: AuthResponse = {
+			accessToken,
+			refreshToken,
+			fullName: loginResult.fullName,
+			avatar: loginResult.avatar,
+			email: loginResult.email,
+		};
+
+		return result;
+	}
+
+	async loginGoogle(code: string) {
+		const loginResult = await this.googleService.preLogin(code);
 
 		const accessToken = await this.signJWTToken(loginResult.id);
 		const refreshToken = await this.signJWTRefeshToken(loginResult.id);

@@ -8,6 +8,7 @@ import { CONFLICT } from '../../constance/error-code';
 import * as bcrypt from 'bcrypt';
 import { CreatUserSocialDTO } from './user.dto';
 import { SocialType } from '../../constance/social-account';
+import { AccountResponse } from '../account/account.response';
 
 @Injectable()
 export class UserService {
@@ -61,6 +62,12 @@ export class UserService {
 				if (
 					!existedUser.socialAccounts.some(acc => acc.type === type)
 				) {
+					if (!existedUser.avatar && dto.avatar) {
+						await this.userRepository.update(
+							{ id: existedUser.id },
+							{ avatar: dto.avatar },
+						);
+					}
 					return existedUser;
 				}
 
@@ -78,5 +85,25 @@ export class UserService {
 		const newUser = await this.userRepository.save(user);
 
 		return newUser;
+	}
+
+	findById(id: string) {
+		const user = this.userRepository.findOneBy({ id });
+		return user;
+	}
+
+	async getAccountsLinked(id: string) {
+		console.log('id: ', id);
+		const user = await this.userRepository.findOne({
+			where: { id },
+			relations: { socialAccounts: true },
+		});
+
+		const accounts = user.socialAccounts.map(
+			acc =>
+				({ socialId: acc.socialId, type: acc.type }) as AccountResponse,
+		);
+
+		return accounts;
 	}
 }
