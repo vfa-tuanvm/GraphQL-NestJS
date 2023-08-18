@@ -1,5 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import {
+	Entity,
+	Column,
+	CreateDateColumn,
+	ManyToOne,
+	DeleteDateColumn,
+} from 'typeorm';
 import User from './user.entity';
 
 @ObjectType()
@@ -23,6 +29,10 @@ class Account {
 
 	@ManyToOne(() => User, user => user.socialAccounts)
 	user: User;
+
+	@DeleteDateColumn({ nullable: true })
+	@Field()
+	deletedAt: string;
 }
 
 export default Account;

@@ -28,17 +28,9 @@ export class PageInfo {
 	currentPage: number;
 }
 
-export abstract class IQuery {
-	abstract refreshToken():
-		| Nullable<AuthResponse>
-		| Promise<Nullable<AuthResponse>>;
-
-	abstract getAccountsLinked():
-		| Nullable<AccountResponse>[]
-		| Promise<Nullable<AccountResponse>[]>;
-}
-
 export abstract class IMutation {
+	abstract disconnect(type: string): string | Promise<string>;
+
 	abstract signin(input: SignInInput): AuthResponse | Promise<AuthResponse>;
 
 	abstract signup(input: SignUpInput): AuthResponse | Promise<AuthResponse>;
@@ -48,6 +40,16 @@ export abstract class IMutation {
 	): AuthResponse | Promise<AuthResponse>;
 
 	abstract loginGoogle(input: string): AuthResponse | Promise<AuthResponse>;
+}
+
+export abstract class IQuery {
+	abstract refreshToken():
+		| Nullable<AuthResponse>
+		| Promise<Nullable<AuthResponse>>;
+
+	abstract getAccountsLinked():
+		| Nullable<AccountResponse>[]
+		| Promise<Nullable<AccountResponse>[]>;
 }
 
 export class AuthResponse {

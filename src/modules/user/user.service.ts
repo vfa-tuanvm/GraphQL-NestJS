@@ -99,10 +99,15 @@ export class UserService {
 			relations: { socialAccounts: true },
 		});
 
-		const accounts = user.socialAccounts.map(
-			acc =>
-				({ socialId: acc.socialId, type: acc.type }) as AccountResponse,
-		);
+		const accounts = user.socialAccounts
+			.filter(acc => acc.deletedAt === null)
+			.map(
+				acc =>
+					({
+						socialId: acc.socialId,
+						type: acc.type,
+					}) as AccountResponse,
+			);
 
 		return accounts;
 	}
