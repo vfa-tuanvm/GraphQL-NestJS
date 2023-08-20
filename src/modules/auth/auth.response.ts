@@ -5,3 +5,9 @@ export class AuthResponse {
 	fullName?: string;
 	avatar?: string;
 }
+
+export class IConnect {
+	id: string;
+	email?: string;
+	avatar?: string;
+}

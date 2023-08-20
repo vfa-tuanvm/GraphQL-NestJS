@@ -1,9 +1,15 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { SignInInput, SignUpInput, loginFacebook } from './auth.dto';
+import {
+	LinkSocialAccount,
+	SignInInput,
+	SignUpInput,
+	loginFacebook,
+} from './auth.dto';
 import { GqlUser } from '../../vendors/decorators/user.decorator';
 import { UseGuards } from '@nestjs/common';
 import { JwtRefreshGuard } from './jwt-refresh-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -39,5 +45,20 @@ export class AuthResolver {
 	@Mutation('loginGoogle')
 	async loginGoogle(@Args('input') code: string) {
 		return this.authService.loginGoogle(code);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Mutation('linkSocialAccount')
+	linkSocialAccount(
+		@GqlUser() user: IJWTInfo,
+		@Args('input', { type: () => LinkSocialAccount })
+		input: LinkSocialAccount,
+	) {
+		return this.authService.connectSocialAccount(
+			input.code,
+			input.type,
+			user.userId,
+			input.redirectURL,
+		);
 	}
 }

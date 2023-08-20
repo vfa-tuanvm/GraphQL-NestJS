@@ -23,6 +23,12 @@ export class LoginFacebookInput {
 	redirectURL: string;
 }
 
+export class LinkSocialAccount {
+	code: string;
+	redirectURL?: Nullable<string>;
+	type: string;
+}
+
 export class PageInfo {
 	totalCount: number;
 	currentPage: number;
@@ -40,6 +46,10 @@ export abstract class IMutation {
 	): AuthResponse | Promise<AuthResponse>;
 
 	abstract loginGoogle(input: string): AuthResponse | Promise<AuthResponse>;
+
+	abstract linkSocialAccount(
+		input: LinkSocialAccount,
+	): string | Promise<string>;
 }
 
 export abstract class IQuery {
@@ -50,6 +60,8 @@ export abstract class IQuery {
 	abstract getAccountsLinked():
 		| Nullable<AccountResponse>[]
 		| Promise<Nullable<AccountResponse>[]>;
+
+	abstract getUserInfo(): UserInfo | Promise<UserInfo>;
 }
 
 export class AuthResponse {
@@ -63,6 +75,12 @@ export class AuthResponse {
 export class AccountResponse {
 	socialId: string;
 	type: string;
+}
+
+export class UserInfo {
+	fullName?: Nullable<string>;
+	avatar?: Nullable<string>;
+	email?: Nullable<string>;
 }
 
 type Nullable<T> = T | null;

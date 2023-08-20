@@ -3,12 +3,18 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { SignInInput, SignUpInput } from './auth.dto';
 import { UserService } from '../user/user.service';
-import { AuthResponse } from './auth.response';
+import { AuthResponse, IConnect } from './auth.response';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
-import { PASSWORD_NOT_MATCH, NOT_FOUND } from '../../constance/error-code';
+import {
+	PASSWORD_NOT_MATCH,
+	NOT_FOUND,
+	USER_HAS_CONNECTED_WITH_SOCIAL_ACCOUNT,
+} from '../../constance/error-code';
 import { FacebookService } from '../facebook/facebook.service';
 import { GoogleService } from '../google/google.service';
+import { AccountService } from '../account/account.service';
+import { SocialType } from '../../constance/social-account';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +24,7 @@ export class AuthService {
 		private readonly config: ConfigService,
 		private readonly facebookService: FacebookService,
 		private readonly googleService: GoogleService,
+		private readonly accountService: AccountService,
 	) {}
 
 	async signJWTToken(userId: string): Promise<string> {
@@ -77,8 +84,8 @@ export class AuthService {
 			});
 		}
 
-		const accessToken = await this.signJWTToken(user.email);
-		const refreshToken = await this.signJWTRefeshToken(user.email);
+		const accessToken = await this.signJWTToken(user.id);
+		const refreshToken = await this.signJWTRefeshToken(user.id);
 
 		const result: AuthResponse = {
 			email: user.email,
@@ -95,8 +102,8 @@ export class AuthService {
 	async signUp(input: SignUpInput) {
 		const user = await this.userService.create(input);
 
-		const accessToken = await this.signJWTToken(user.email);
-		const refreshToken = await this.signJWTRefeshToken(user.email);
+		const accessToken = await this.signJWTToken(user.id);
+		const refreshToken = await this.signJWTRefeshToken(user.id);
 
 		const result: AuthResponse = {
 			email: user.email,
@@ -143,5 +150,77 @@ export class AuthService {
 		};
 
 		return result;
+	}
+
+	async connectSocialAccount(
+		code: string,
+		type: string,
+		userId: string,
+		redirectURL?: string,
+	) {
+		const isConnected = await this.accountService.hasSocialAccount(
+			type,
+			userId,
+		);
+
+		if (isConnected) {
+			throw new GraphQLError(
+				`User has arealdy connected with ${type.toLowerCase()}`,
+				{
+					extensions: {
+						code: USER_HAS_CONNECTED_WITH_SOCIAL_ACCOUNT,
+						statusCode: HttpStatus.CONFLICT,
+					},
+				},
+			);
+		}
+
+		let userInfSocial: IConnect;
+
+		switch (type) {
+			case SocialType.Facebook:
+				userInfSocial = await this.facebookService.preConnect(
+					code,
+					redirectURL,
+				);
+				break;
+			case SocialType.Google:
+				userInfSocial = await this.googleService.preConnect(code);
+				break;
+			default:
+				break;
+		}
+
+		const account = await this.accountService.findByIdAndType(
+			userInfSocial.id,
+			type,
+		);
+
+		if (account) {
+			throw new GraphQLError(
+				`This ${type.toLowerCase()} account has connected with another user`,
+				{
+					extensions: {
+						code: '',
+						statusCode: HttpStatus.NOT_ACCEPTABLE,
+					},
+				},
+			);
+		}
+
+		const user = await this.userService.findById(userId);
+
+		if (!user.avatar && userInfSocial.avatar) {
+			this.userService.updateAvatar(user.id, userInfSocial.avatar);
+		}
+
+		await this.accountService.create({
+			socialId: userInfSocial.id,
+			type,
+			user,
+			email: userInfSocial.email,
+		});
+
+		return 'Connected';
 	}
 }

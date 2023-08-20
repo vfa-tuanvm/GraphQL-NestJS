@@ -7,9 +7,16 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { UserModule } from '../user/user.module';
 import { FacebookModule } from '../facebook/facebook.module';
 import { GoogleModule } from '../google/google.module';
+import { AccountModule } from '../account/account.module';
 
 @Module({
-	imports: [JwtModule, UserModule, FacebookModule, GoogleModule],
+	imports: [
+		JwtModule,
+		UserModule,
+		FacebookModule,
+		GoogleModule,
+		AccountModule,
+	],
 	providers: [AuthService, JwtStrategy, JwtRefreshStrategy, AuthResolver],
 })
 export class AuthModule {}

@@ -21,9 +21,8 @@ export class AccountService {
 			withDeleted: true,
 		});
 
-		console.log('existedAccount: ', existedAccount);
 		if (existedAccount && existedAccount.deletedAt) {
-			const restoreResponse = await this.accountRepository.restore({
+			await this.accountRepository.restore({
 				socialId: dto.socialId,
 				type: dto.type,
 			});
@@ -37,8 +36,6 @@ export class AccountService {
 					user: dto.user,
 				},
 			);
-
-			console.log('restoreResponse.affected: ', restoreResponse.affected);
 
 			return existedAccount;
 		}
@@ -68,5 +65,17 @@ export class AccountService {
 		await this.accountRepository.softDelete({ type, user });
 
 		return type;
+	}
+
+	async hasSocialAccount(type: string, userId: string) {
+		const user = await this.userService.findById(userId);
+
+		const account = await this.accountRepository.findOneBy({ type, user });
+
+		if (!account) {
+			return false;
+		}
+
+		return true;
 	}
 }

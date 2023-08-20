@@ -3,6 +3,13 @@ type AccountResponse {
 	type: String!
 }
 
+type UserInfo {
+	fullName: String
+	avatar: String
+	email: String
+}
+
 type Query {
 	getAccountsLinked: [AccountResponse]!
+	getUserInfo: UserInfo!
 }

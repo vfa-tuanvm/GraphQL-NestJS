@@ -103,4 +103,15 @@ export class GoogleService {
 
 		return user;
 	}
+
+	async preConnect(code: string) {
+		const { access_token, id_token } = await this.getToken(code);
+
+		const { email, id, picture } = await this.getUserInfo(
+			id_token,
+			access_token,
+		);
+
+		return { id, email, avatar: picture };
+	}
 }

@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, Matches } from 'class-validator';
 
 @InputType()
 export class SignInInput {
@@ -41,4 +41,19 @@ export class loginFacebook {
 	@Field()
 	@IsNotEmpty()
 	redirectURL: string;
+}
+
+@InputType()
+export class LinkSocialAccount {
+	@Field()
+	@IsNotEmpty()
+	code: string;
+
+	@Field()
+	@IsOptional()
+	redirectURL?: string;
+
+	@Field()
+	@IsNotEmpty()
+	type: string;
 }

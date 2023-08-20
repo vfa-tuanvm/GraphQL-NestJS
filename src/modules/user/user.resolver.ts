@@ -13,4 +13,16 @@ export class UserResolver {
 	getAccountsLinked(@GqlUser() user: IJWTInfo) {
 		return this.userService.getAccountsLinked(user.userId);
 	}
+
+	@UseGuards(JwtAuthGuard)
+	@Query('getUserInfo')
+	async getUserInfo(@GqlUser() user: IJWTInfo) {
+		const userInfo = await this.userService.findById(user.userId);
+
+		return {
+			fullName: userInfo.fullName,
+			avatar: userInfo.avatar,
+			email: userInfo.email,
+		};
+	}
 }

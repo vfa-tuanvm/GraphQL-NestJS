@@ -18,6 +18,8 @@ export class FacebookService {
 	) {}
 
 	async getToken(code: string, redirectURL: string) {
+		console.log('redirectURL: ', redirectURL);
+		console.log('code: ', code);
 		try {
 			const appId = this.configService.get<string>('FB_APP_ID');
 			const appSecret = this.configService.get<string>('FB_APP_SECRET');
@@ -84,5 +86,17 @@ export class FacebookService {
 		});
 
 		return user;
+	}
+
+	async preConnect(code: string, redirectURL: string) {
+		const { access_token } = await this.getToken(code, redirectURL);
+
+		const { id, email, picture } = await this.getUserInfo(access_token);
+
+		return {
+			id,
+			email,
+			avatar: picture.data.url,
+		};
 	}
 }
