@@ -12,6 +12,7 @@ import { join } from 'path';
 import { UserModule } from './modules/user/user.module';
 import { FacebookModule } from './modules/facebook/facebook.module';
 import { AccountModule } from './modules/account/account.module';
+import { GoogleModule } from './modules/google/google.module';
 
 @Module({
 	imports: [
@@ -56,6 +57,7 @@ import { AccountModule } from './modules/account/account.module';
 		AuthModule,
 		UserModule,
 		FacebookModule,
+		GoogleModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
