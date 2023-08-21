@@ -55,7 +55,6 @@ export class AccountService {
 			withDeleted: false,
 		});
 
-		console.log('account: ', account);
 		return account;
 	}
 

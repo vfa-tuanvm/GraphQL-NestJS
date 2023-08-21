@@ -98,7 +98,7 @@ export class GoogleService {
 			socialId: userInfo.id,
 			type: SocialType.Google,
 			user,
-			email: user.email,
+			email: userInfo.email,
 		});
 
 		return user;
