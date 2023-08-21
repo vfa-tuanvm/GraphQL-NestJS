@@ -93,7 +93,6 @@ export class UserService {
 	}
 
 	async getAccountsLinked(id: string) {
-		console.log('id: ', id);
 		const user = await this.userRepository.findOne({
 			where: { id },
 			relations: { socialAccounts: true },
