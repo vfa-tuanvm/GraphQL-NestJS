@@ -32,6 +32,10 @@ export abstract class IQuery {
 	abstract refreshToken():
 		| Nullable<AuthResponse>
 		| Promise<Nullable<AuthResponse>>;
+
+	abstract getAccountsLinked():
+		| Nullable<AccountResponse>[]
+		| Promise<Nullable<AccountResponse>[]>;
 }
 
 export abstract class IMutation {
@@ -52,6 +56,11 @@ export class AuthResponse {
 	avatar?: Nullable<string>;
 	accessToken: string;
 	refreshToken: string;
+}
+
+export class AccountResponse {
+	socialId: string;
+	type: string;
 }
 
 type Nullable<T> = T | null;
