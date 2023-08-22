@@ -3,7 +3,10 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { IGoogleToken, IGoogleUser } from './google.response';
 import { GraphQLError } from 'graphql';
-import { CAN_NOT_GET_GOOGLE_TOKEN } from '../../constance/error-code';
+import {
+	CAN_NOT_GET_GOOGLE_TOKEN,
+	CAN_NOT_GET_USER_GOOGLE,
+} from '../../constance/error-code';
 import { AccountService } from '../account/account.service';
 import { SocialType } from '../../constance/social-account';
 import { UserService } from '../user/user.service';
@@ -67,7 +70,12 @@ export class GoogleService {
 
 			return data;
 		} catch (error) {
-			console.log('error: ', error);
+			throw new GraphQLError('Can not get user info from Google', {
+				extensions: {
+					code: CAN_NOT_GET_USER_GOOGLE,
+					statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+				},
+			});
 		}
 	}
 

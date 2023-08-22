@@ -1,8 +1,10 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from '../../user/user.service';
+import { GraphQLError } from 'graphql';
+import { YOU_ARE_UNAUTHORIZE } from '../../../constance/error-code';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -21,7 +23,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		const account = await this.userService.findById(payload.userId);
 
 		if (!account) {
-			throw new UnauthorizedException();
+			throw new GraphQLError('You are unauthorized', {
+				extensions: {
+					code: YOU_ARE_UNAUTHORIZE,
+					statusCode: HttpStatus.UNAUTHORIZED,
+				},
+			});
 		}
 
 		return payload;

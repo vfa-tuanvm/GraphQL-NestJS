@@ -21,9 +21,8 @@ export class AccountService {
 			withDeleted: true,
 		});
 
-		console.log('existedAccount: ', existedAccount);
 		if (existedAccount && existedAccount.deletedAt) {
-			const restoreResponse = await this.accountRepository.restore({
+			await this.accountRepository.restore({
 				socialId: dto.socialId,
 				type: dto.type,
 			});
@@ -37,8 +36,6 @@ export class AccountService {
 					user: dto.user,
 				},
 			);
-
-			console.log('restoreResponse.affected: ', restoreResponse.affected);
 
 			return existedAccount;
 		}
@@ -58,7 +55,6 @@ export class AccountService {
 			withDeleted: false,
 		});
 
-		console.log('account: ', account);
 		return account;
 	}
 

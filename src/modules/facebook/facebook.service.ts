@@ -3,7 +3,10 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IFacebookToken, IFacebookUser } from './facebook.response';
 import { GraphQLError } from 'graphql';
-import { CAN_NOT_GET_FACEBOOK_TOKEN } from '../../constance/error-code';
+import {
+	CAN_NOT_GET_FACEBOOK_TOKEN,
+	CAN_NOT_GET_USER_FACEBOOK,
+} from '../../constance/error-code';
 import { UserService } from '../user/user.service';
 import { AccountService } from '../account/account.service';
 import { SocialType } from '../../constance/social-account';
@@ -42,13 +45,22 @@ export class FacebookService {
 	}
 
 	async getUserInfo(accessToken: string) {
-		const res = (
-			await this.httpService.axiosRef.get<IFacebookUser>(
-				`https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,email,picture.width(640).height(640)`,
-			)
-		).data;
+		try {
+			const res = (
+				await this.httpService.axiosRef.get<IFacebookUser>(
+					`https://graph.facebook.com/me?access_token=${accessToken}&fields=id,name,email,picture.width(640).height(640)`,
+				)
+			).data;
 
-		return res;
+			return res;
+		} catch (error) {
+			throw new GraphQLError('Can not get user info from Facebook', {
+				extensions: {
+					code: CAN_NOT_GET_USER_FACEBOOK,
+					statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+				},
+			});
+		}
 	}
 
 	async preLogin(code: string, redirectURL: string) {

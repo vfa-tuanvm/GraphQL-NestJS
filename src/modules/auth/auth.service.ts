@@ -6,7 +6,7 @@ import { UserService } from '../user/user.service';
 import { AuthResponse } from './auth.response';
 import * as bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
-import { PASSWORD_NOT_MATCH, NOT_FOUND } from '../../constance/error-code';
+import { PASSWORD_NOT_MATCH, USER_NOT_FOUND } from '../../constance/error-code';
 import { FacebookService } from '../facebook/facebook.service';
 import { GoogleService } from '../google/google.service';
 
@@ -60,7 +60,7 @@ export class AuthService {
 		if (!user) {
 			throw new GraphQLError('User not found', {
 				extensions: {
-					code: NOT_FOUND,
+					code: USER_NOT_FOUND,
 					statusCode: HttpStatus.NOT_FOUND,
 				},
 			});

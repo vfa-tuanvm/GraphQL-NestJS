@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import User from '../../entity/user.entity';
 import { SignUpInput } from '../auth/auth.dto';
 import { GraphQLError } from 'graphql';
-import { CONFLICT } from '../../constance/error-code';
+import { EMAIL_HAS_BEEN_USED } from '../../constance/error-code';
 import * as bcrypt from 'bcrypt';
 import { CreatUserSocialDTO } from './user.dto';
 import { SocialType } from '../../constance/social-account';
@@ -25,7 +25,7 @@ export class UserService {
 		if (user) {
 			throw new GraphQLError('Email has been used', {
 				extensions: {
-					code: CONFLICT,
+					code: EMAIL_HAS_BEEN_USED,
 					statusCode: HttpStatus.CONFLICT,
 				},
 			});
@@ -93,7 +93,6 @@ export class UserService {
 	}
 
 	async getAccountsLinked(id: string) {
-		console.log('id: ', id);
 		const user = await this.userRepository.findOne({
 			where: { id },
 			relations: { socialAccounts: true },
